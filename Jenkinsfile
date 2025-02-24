@@ -47,6 +47,7 @@ pipeline {
         stage('Run Ansible Playbook') {
             agent { label 'master' } // Нода з Ansible
             steps {
+	    	sh 'sleep 10'
               //  sh '''
                // pwd
               //  whoami
