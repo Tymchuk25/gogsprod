@@ -1,5 +1,5 @@
 pipeline {
-    agent { label 'build' } // Нода, де є Go
+    agent { label 'master' } // Нода, де є Go
     environment {
         REPO_URL = 'https://github.com/Tymchuk25/gogsprod.git'
         BRANCH = 'main'
