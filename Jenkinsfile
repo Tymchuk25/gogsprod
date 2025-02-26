@@ -9,14 +9,14 @@ pipeline {
 	stage('Clean Workspace') {
             steps {
                 echo 'Cleaning workspace...'
-                cleanWs()
+           //     cleanWs()
             }
         }
 	    
         stage('Clone Repository') {
             steps {
                 echo 'Cloning repository...'
-                sh 'git clone --depth 1 $REPO_URL gogs'
+           //     sh 'git clone --depth 1 $REPO_URL gogs'
             }
         }
 
@@ -24,37 +24,37 @@ pipeline {
             steps {
                 echo 'Building the application...'
                 sh 'pwd && ls -la'
-                sh '''
-                if [ -d "gogs" ]; then cd gogs; else echo "Error: gogs directory not found"; exit 1; fi
-                whoami
-                ls -la
-                go build -o gogs || { echo "Build failed!"; exit 1; }
-                '''
+             //   sh '''
+             //   if [ -d "gogs" ]; then cd gogs; else echo "Error: gogs directory not found"; exit 1; fi
+             //   whoami
+           //     ls -la
+            //    go build -o gogs || { echo "Build failed!"; exit 1; }
+             //   '''
             }
         }
 
 	stage('Test Application'){
 	    steps {
 		echo 'Running tests...'
-		sh 'go test ./...'		
+	//	sh 'go test ./...'		
 		}
 	}
 	    
         stage('Archive Artifact') {
             steps {
-                echo 'Archiving application...'
-                sh '''
-                zip -r gogs.zip gogs
-                '''
+             //   echo 'Archiving application...'
+             //   sh '''
+              //  zip -r gogs.zip gogs
+             //   '''
             }
         }
 
         stage('Transfer Archive to Ansible Node') {
             steps {
 		echo 'Transferring archive to Ansible node...'
-                sh '''
-                scp gogs.zip vagrant@192.168.56.113:/tmp/gogs.zip
-                '''
+             //   sh '''
+            //    scp gogs.zip vagrant@192.168.56.113:/tmp/gogs.zip
+            //    '''
             }
         }
 
@@ -68,8 +68,9 @@ pipeline {
                 whoami
                 which ansible-playbook || { echo "Ansible not found!"; exit 1; }
                 ansible-playbook --version
-                ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i /var/lib/jenkins/workspace/PipelineGogsApp/ansible/host.ini /var/lib/jenkins/workspace/PipelineGogsApp/ansible/roleplaybook.yml
-                '''           
+		ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i /home/vagrant/ansible/host.ini /home/vagrant/ansible/roleplaybook.yml
+                ''' 
+	//	 ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i /var/lib/jenkins/workspace/PipelineGogsApp/ansible/host.ini /var/lib/jenkins/workspace/PipelineGogsApp/ansible/roleplaybook.yml
             }
         }
     }
