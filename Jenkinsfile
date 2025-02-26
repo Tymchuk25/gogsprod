@@ -42,7 +42,7 @@ pipeline {
 	    
         stage('Archive Artifact') {
             steps {
-             //   echo 'Archiving application...'
+                echo 'Archiving application...'
              //   sh '''
               //  zip -r gogs.zip gogs
              //   '''
