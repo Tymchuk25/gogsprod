@@ -26,7 +26,7 @@ pipeline {
 		    
 		sh '''
   		if [ -d "gogs" ]; then cd gogs; else echo "Error: gogs directory not found"; exit 1; fi
-  		golangci-lint run --verbose --timeout=5m ./...
+  		/home/vagrant/go/bin/golangci-lint run --verbose --timeout=5m ./...
   		'''	
 		   }
 	}
