@@ -47,7 +47,11 @@ pipeline {
 	stage('Test Application'){
 	    steps {
 		echo 'Running tests...'
-		sh 'go test ./...'		
+		    
+		sh '''
+  		if [ -d "gogs" ]; then cd gogs; else echo "Error: gogs directory not found"; exit 1; fi
+  		go test ./...
+    		'''		
 		}
 	}
 	    
