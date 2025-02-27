@@ -23,7 +23,7 @@ pipeline {
 	stage('Lint Check'){
 	    steps{
 		echo 'Lintting...'	
-		sh 'golangci-lint run --verbose ./...'
+		sh '/home/vagrant/go/bin/golangci-lint run ./...'
 		   }
 	}
 	    
