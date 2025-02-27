@@ -36,6 +36,7 @@ pipeline {
                 echo 'Building the application...'
                 sh 'pwd && ls -la'
                 sh '''
+		if [ -d "gogs" ]; then cd gogs; else echo "Error: gogs directory not found"; exit 1; fi
                 whoami
                 ls -la
                 go build -o gogs || { echo "Build failed!"; exit 1; }
