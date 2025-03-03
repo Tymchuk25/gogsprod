@@ -9,7 +9,7 @@ pipeline {
 	    steps{
 		echo 'Lintting...'
 		sh '''
-  		/home/vagrant/go/bin/golangci-lint run --verbose --timeout=5m ./...
+  		/home/vagrant/go/bin/golangci-lint run --verbose --timeout=5m ./... 
   		'''	
 	    }
 	}
