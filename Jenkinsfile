@@ -4,15 +4,7 @@ pipeline {
         REPO_URL = 'https://github.com/Tymchuk25/gogsprod.git'
     }
     stages {
-
-	stage('Clean Workspace') {
-            steps {
-                echo 'Cleaning workspace...'
-                cleanWs()
-            }
-        }
-
-
+	    
 	stage('Lint Check'){
 	    steps{
 		echo 'Lintting...'
@@ -78,6 +70,11 @@ pipeline {
 	//	ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i /home/vagrant/ansible/host.ini /home/vagrant/ansible/roleplaybook.yml
         //       ''' 
             }
+        }
+    }
+    post {         
+        always {
+            cleanWs()  
         }
     }
 }
