@@ -2,43 +2,23 @@ pipeline {
     agent { label 'build' } // Нода, де є Go
     environment {
         REPO_URL = 'https://github.com/Tymchuk25/gogsprod.git'
-        BRANCH = 'main'
     }
     stages {
-
-	stage('Clean Workspace') {
-            steps {
-                echo 'Cleaning workspace...'
-                cleanWs()
-            }
-        }
 	    
-        stage('Clone Repository') {
-            steps {
-                echo 'Cloning repository...'
-                sh 'git clone --depth 1 $REPO_URL gogs'
-            }
-        }
-
 	stage('Lint Check'){
 	    steps{
 		echo 'Lintting...'
-		    
 		sh '''
-  		if [ -d "gogs" ]; then cd gogs; else echo "Error: gogs directory not found"; exit 1; fi
-  		/home/vagrant/go/bin/golangci-lint run --verbose --timeout=5m ./...
+  		/home/vagrant/go/bin/golangci-lint run --verbose --timeout=5m ./... 
   		'''	
-		   }
+	    }
 	}
 	    
         stage('Build Artifact') {
+	    when { branch 'main' }
             steps {
                 echo 'Building the application...'
-                sh 'pwd && ls -la'
                 sh '''
-		if [ -d "gogs" ]; then cd gogs; else echo "Error: gogs directory not found"; exit 1; fi
-                whoami
-                ls -la
                 go build -o gogs || { echo "Build failed!"; exit 1; }
                 '''
             }
@@ -46,16 +26,15 @@ pipeline {
 
 	stage('Test Application'){
 	    steps {
-		echo 'Running tests...'
-		    
+		echo 'Running tests...'  
 		sh '''
-  		if [ -d "gogs" ]; then cd gogs; else echo "Error: gogs directory not found"; exit 1; fi
   		go test ./...
     		'''		
 		}
 	}
 	    
         stage('Archive Artifact') {
+	    when { branch 'main' }
             steps {
                 echo 'Archiving application...'
                 sh '''
@@ -65,6 +44,7 @@ pipeline {
         }
 
         stage('Transfer Archive to Ansible Node') {
+	    when { branch 'main' }
             steps {
 		echo 'Transferring archive to Ansible node...'
                 sh '''
@@ -74,6 +54,7 @@ pipeline {
         }
 
         stage('Run Ansible Playbook') {
+	    when { branch 'main' }
             agent { label 'master' } // Нода з Ansible
             steps {
 		echo 'Running Ansible Playbook...'
@@ -88,5 +69,9 @@ pipeline {
             }
         }
     }
+    post {         
+        always {
+            cleanWs()  
+        }
+    }
 }
-
