@@ -1,62 +1,77 @@
 pipeline {
-    agent { label 'master' } // Нода, де є Go
+    agent { label 'build' } // Нода, де є Go
     environment {
-        REPO_URL = 'https://github.com/Tymchuk25/gogs.git'
-        BRANCH = 'main'
+        REPO_URL = 'https://github.com/Tymchuk25/gogsprod.git'
     }
     stages {
-        stage('Clone Repository') {
-            steps {
-                echo 'clone'
-                //sh 'sudo rm -rf gogs && sudo rm -rf gogs.zip  && git clone -b $BRANCH --depth 1 $REPO_URL gogs'
-            }
-        }
-
+	    
+	stage('Lint Check'){
+	    steps{
+		echo 'Lintting...'
+		sh '''
+  		/home/vagrant/go/bin/golangci-lint run --verbose --timeout=5m ./... 
+  		'''	
+	    }
+	}
+	    
         stage('Build Artifact') {
+	    when { branch 'main' }
             steps {
-                echo 'build'
-               // sh 'pwd && ls -la'
-                //sh '''
-                //if [ -d "gogs" ]; then cd gogs; else echo "Error: gogs directory not found"; exit 1; fi
-                //whoami
-                //ls -la
-                //go build -o gogs
-                //'''
+                echo 'Building the application...'
+                sh '''
+                go build -o gogs || { echo "Build failed!"; exit 1; }
+                '''
             }
         }
 
+	stage('Test Application'){
+	    steps {
+		echo 'Running tests...'  
+		sh '''
+  		go test ./...
+    		'''		
+		}
+	}
+	    
         stage('Archive Artifact') {
+	    when { branch 'main' }
             steps {
-                echo 'archive'
-                sh 'sleep 7'
-                //sh '''
-                //zip -r gogs.zip gogs
-                //'''
+                echo 'Archiving application...'
+                sh '''
+                zip -r gogs.zip gogs
+                '''
             }
         }
 
         stage('Transfer Archive to Ansible Node') {
+	    when { branch 'main' }
             steps {
-               // sh '''
-                //scp gogs.zip vagrant@192.168.56.113:/tmp/gogs.zip
-                //'''
-                echo 'transfer'
+		echo 'Transferring archive to Ansible node...'
+                sh '''
+                scp gogs.zip vagrant@192.168.56.113:/tmp/gogs.zip
+                '''
             }
         }
 
         stage('Run Ansible Playbook') {
+	    when { branch 'main' }
             agent { label 'master' } // Нода з Ansible
             steps {
-	    	sh 'sleep 10'
-              //  sh '''
-               // pwd
-              //  whoami
-  //  which ansible-playbook || echo "Ansible не знайдено!"
-  //  ansible-playbook --version
-   // ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i /var/lib/jenkins/workspace/PipelineGogsApp/ansible/host.ini /var/lib/jenkins/workspace/PipelineGogsApp/ansible/roleplaybook.yml
-// '''           
+		echo 'Running Ansible Playbook...'
+               // sh '''
+	//	set -e
+        //        pwd
+        //        whoami
+        //        which ansible-playbook || { echo "Ansible not found!"; exit 1; }
+        //        ansible-playbook --version
+	//	ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i /home/vagrant/ansible/host.ini /home/vagrant/ansible/roleplaybook.yml
+        //       ''' 
             }
         }
     }
+    post {         
+        always {
+            cleanWs()  
+        }
+    }
 }
-
