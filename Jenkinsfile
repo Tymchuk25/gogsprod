@@ -68,7 +68,8 @@ pipeline {
         }
 
 	stage('Create GitHub Release'){
-	    when { tag 'v*' }
+	   // when { tag 'v*' }
+	when { branch 'main' }
 	    steps {
 		echo 'Creating GitHub Release...'
                 sh """
