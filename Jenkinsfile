@@ -42,6 +42,12 @@ pipeline {
                 sh '''
                 zip -r gogs.zip gogs
                 '''
+		    sh '''
+git fetch --tags
+LATEST_TAG=$(git tag --sort=-v:refname | head -n 1)
+echo "Latest Tag: $LATEST_TAG"
+'''
+
             }
         }
 
@@ -49,12 +55,6 @@ pipeline {
 	    when { branch 'main' }
             steps {
 		echo 'Transferring archive to Ansible node...'
-		sh '''
-export TAG_NAME=$(git describe --tags --abbrev=0)
-echo "Found TAG: $TAG_NAME"
-'''
-
-		echo "${env.TAG_NAME}"
                 sh '''
                 scp gogs.zip vagrant@192.168.56.113:/tmp/gogs.zip
                 '''
