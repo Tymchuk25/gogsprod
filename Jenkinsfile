@@ -36,7 +36,8 @@ pipeline {
         }
 	    
         stage('Archive Artifact') {
-	    when { branch 'main' }
+	//when { branch 'main' }
+	when { branch 'main' }
             steps {
                 echo 'Archiving application...'
                 sh '''
