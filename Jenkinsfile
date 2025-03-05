@@ -2,7 +2,7 @@ pipeline {
     agent { label 'build' } // Нода, де є Go
     environment {
         REPO_URL = 'https://github.com/Tymchuk25/gogsprod.git'
-	GH_TOKEN = credentials('github-credentials')
+	GH_TOKEN = credentials('github-token')
 	ZIP_NAME = 'gogs.zip'
     }
     stages {
