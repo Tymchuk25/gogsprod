@@ -42,13 +42,13 @@ pipeline {
                 sh '''
                 zip -r gogs.zip gogs
                 '''
-	    script {
-                    env.TAG_NAME = sh(script: '''
-                        git fetch --tags
-                        git tag --sort=-v:refname | head -n 1
-                    ''', returnStdout: true).trim()
-                    echo "Latest Tag: ${env.TAG_NAME}"
-                }
+	//    script {
+        //            env.TAG_NAME = sh(script: '''
+        //                git fetch --tags
+       //                 git tag --sort=-v:refname | head -n 1
+       //             ''', returnStdout: true).trim()
+      //              echo "Latest Tag: ${env.TAG_NAME}"
+         //       }
             }
         }
 
