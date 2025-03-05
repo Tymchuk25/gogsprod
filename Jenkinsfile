@@ -2,7 +2,7 @@ pipeline {
     agent { label 'build' } // Нода, де є Go
     environment {
         REPO_URL = 'https://github.com/Tymchuk25/gogsprod.git'
-	GH_TOKEN = credentials('github-token')
+	GH_TOKEN = credentials('github-credentials')
 	ZIP_NAME = 'gogs.zip'
     }
     stages {
@@ -67,8 +67,8 @@ pipeline {
         }
 
 	stage('Create GitHub Release'){
-	    when { tag 'v*' }
-	//when { branch 'main' }
+	    //when { tag 'v*' }
+	when { branch 'main' }
 	    steps {
 		echo 'Creating GitHub Release...'
                 sh """
