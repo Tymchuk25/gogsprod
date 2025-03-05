@@ -54,7 +54,7 @@ pipeline {
             }
         }
 
-	stage('Create GitHub Release')
+	stage('Create GitHub Release'){
 	    when { tag 'v*' }
 	    steps {
 		echo 'Creating GitHub Release...'
@@ -62,6 +62,7 @@ pipeline {
   		gh release create ${env.TAG_NAME} ${ZIP_NAME} --repo ${env.GIT_URL} --generate-notes
 		'''
 	    }
+	}
 
         stage('Deploy (Run Ansible Playbook)') {
 	    when { branch 'main' }
