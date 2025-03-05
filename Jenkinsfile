@@ -36,7 +36,6 @@ pipeline {
         }
 	    
         stage('Archive Artifact') {
-	//when { branch 'main' }
 	when { branch 'main' }
             steps {
                 echo 'Archiving application...'
@@ -68,8 +67,8 @@ pipeline {
         }
 
 	stage('Create GitHub Release'){
-	   // when { tag 'v*' }
-	when { branch 'main' }
+	    when { tag 'v*' }
+	//when { branch 'main' }
 	    steps {
 		echo 'Creating GitHub Release...'
                 sh """
