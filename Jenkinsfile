@@ -49,6 +49,11 @@ pipeline {
 	    when { branch 'main' }
             steps {
 		echo 'Transferring archive to Ansible node...'
+		sh '''
+export TAG_NAME=$(git describe --tags --abbrev=0)
+echo "Found TAG: $TAG_NAME"
+'''
+
 		echo "${env.TAG_NAME}"
                 sh '''
                 scp gogs.zip vagrant@192.168.56.113:/tmp/gogs.zip
