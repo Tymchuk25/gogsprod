@@ -73,9 +73,9 @@ pipeline {
 		echo 'Creating GitHub Release...'
                 sh """
                 gh release create \
-                    ${TAG_NAME} \
-                    ${ZIP_NAME} \
-                    --repo ${REPO_URL} \
+                    ${env.TAG_NAME} \
+                    ${env.ZIP_NAME} \
+                    --repo ${env.GIT_URL} \
                     --generate-notes
                 """
 	    }
