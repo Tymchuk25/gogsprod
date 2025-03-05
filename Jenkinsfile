@@ -56,13 +56,9 @@ pipeline {
 	    when { branch 'main' }
             steps {
 		echo 'Transferring archive to Ansible node...'
-                sh """
-                gh release create \
-                    ${env.TAG_NAME} \
-                    ${ZIP_NAME} \
-                    --repo ${env.GIT_URL} \
-                    --generate-notes
-                """
+		sh '''
+  		  scp gogs.zip vagrant@192.168.56.113:/tmp/gogs.zip
+      		'''
             }
         }
 
@@ -70,9 +66,13 @@ pipeline {
 	    when { tag 'v*' }
 	    steps {
 		echo 'Creating GitHub Release...'
-		sh '''
-  		gh release create ${env.TAG_NAME} ${ZIP_NAME} --repo ${REPO_URL} --generate-notes
-		'''
+                sh """
+                gh release create \
+                    ${env.TAG_NAME} \
+                    ${ZIP_NAME} \
+                    --repo ${env.GIT_URL} \
+                    --generate-notes
+                """
 	    }
 	}
 
