@@ -2,6 +2,7 @@ pipeline {
     agent { label 'build' } // Нода, де є Go
     environment {
         REPO_URL = 'https://github.com/Tymchuk25/gogsprod.git'
+	GH_TOKEN = credentials('github-token')
     }
     stages {
 	    
@@ -13,6 +14,15 @@ pipeline {
   		'''	
 	    }
 	}
+
+	stage('Test Application'){
+	    steps {
+		echo 'Running tests...'  
+		sh '''
+  		go test ./...
+    		'''		
+		}
+	}
 	    
         stage('Build Artifact') {
 	    when { branch 'main' }
@@ -23,15 +33,6 @@ pipeline {
                 '''
             }
         }
-
-	stage('Test Application'){
-	    steps {
-		echo 'Running tests...'  
-		sh '''
-  		go test ./...
-    		'''		
-		}
-	}
 	    
         stage('Archive Artifact') {
 	    when { branch 'main' }
@@ -53,7 +54,16 @@ pipeline {
             }
         }
 
-        stage('Run Ansible Playbook') {
+	stage('Create GitHub Release')
+	    when { tag 'v*' }
+	    steps {
+		echo 'Creating GitHub Release...'
+		sh '''
+  		gh release create ${env.TAG_NAME} ${ZIP_NAME} --repo ${env.GIT_URL} --generate-notes
+		'''
+	    }
+
+        stage('Deploy (Run Ansible Playbook)') {
 	    when { branch 'main' }
             agent { label 'master' } // Нода з Ansible
             steps {
