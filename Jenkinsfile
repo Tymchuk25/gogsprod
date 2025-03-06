@@ -2,7 +2,7 @@ pipeline {
     agent { label 'build' } // Нода, де є Go
     environment {
         REPO_URL = 'https://github.com/Tymchuk25/gogsprod.git'
-	GH_TOKEN = credentials('github-token')
+	GH_TOKEN = credentials('github-credentials')
 	ZIP_NAME = 'gogs.zip'
     }
     stages {
@@ -36,7 +36,7 @@ pipeline {
         }
 	    
         stage('Archive Artifact') {
-	    when { branch 'main' }
+	when { branch 'main' }
             steps {
                 echo 'Archiving application...'
                 sh '''
@@ -56,6 +56,10 @@ pipeline {
 	    when { branch 'main' }
             steps {
 		echo 'Transferring archive to Ansible node...'
+		    echo "TAG_NAME: ${env.TAG_NAME}"
+			echo "ZIP_NAME: ${env.ZIP_NAME}"
+			echo "GIT_URL: ${env.GIT_URL}"
+
 		sh '''
   		  scp gogs.zip vagrant@192.168.56.113:/tmp/gogs.zip
       		'''
@@ -63,13 +67,14 @@ pipeline {
         }
 
 	stage('Create GitHub Release'){
-	    when { tag 'v*' }
+	    //when { tag 'v*' }
+	when { branch 'main' }
 	    steps {
 		echo 'Creating GitHub Release...'
                 sh """
                 gh release create \
                     ${env.TAG_NAME} \
-                    ${ZIP_NAME} \
+                    ${env.ZIP_NAME} \
                     --repo ${env.GIT_URL} \
                     --generate-notes
                 """
