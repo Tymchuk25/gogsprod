@@ -66,11 +66,20 @@ pipeline {
             }
         }
 
-	stage('Create GitHub Release'){
-	    //when { tag 'v*' }
-	when { branch 'main' }
-	    steps {
-		echo 'Creating GitHub Release...'
+stage('Create GitHub Release') {
+    when { branch 'main' }
+    steps {
+        script {
+            echo 'Checking if GitHub Release already exists...'
+            def releaseExists = sh(
+                script: "gh release view ${env.TAG_NAME} --repo ${env.GIT_URL} > /dev/null 2>&1",
+                returnStatus: true
+            ) == 0
+
+            if (releaseExists) {
+                echo "Release ${env.TAG_NAME} already exists. Skipping release creation."
+            } else {
+                echo 'Creating GitHub Release...'
                 sh """
                 gh release create \
                     ${env.TAG_NAME} \
@@ -78,8 +87,11 @@ pipeline {
                     --repo ${env.GIT_URL} \
                     --generate-notes
                 """
-	    }
-	}
+            }
+        }
+    }
+}
+
 
         stage('Deploy (Run Ansible Playbook)') {
 	    when { branch 'main' }
