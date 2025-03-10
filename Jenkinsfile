@@ -40,7 +40,7 @@ pipeline {
             steps {
                 echo 'Archiving application...'
                 sh '''
-                zip -r gogs.zip gogs
+                 zip -r gogs.zip gogs
                 '''
 	    script {
                     env.TAG_NAME = sh(script: '''
