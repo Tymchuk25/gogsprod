@@ -1,44 +1,44 @@
-FROM golang:alpine3.21 AS binarybuilder
+# --- СТАДІЯ 1: BUILD ---
+
+FROM golang:alpine3.21 AS builder
+
 RUN apk --no-cache --no-progress add --virtual \
   build-deps \
   build-base \
-  git \
-  linux-pam-dev
-
-WORKDIR /gogs.io/gogs
-COPY . .
-
-RUN ./docker/build/install-task.sh
-RUN TAGS="cert pam" task build
-
-FROM alpine:3.21
-RUN apk --no-cache --no-progress add \
-  bash \
-  ca-certificates \
-  curl \
-  git \
-  linux-pam \
-  openssh \
-  s6 \
-  shadow \
-  socat \
-  tzdata \
-  rsync
-
-ENV GOGS_CUSTOM /data/gogs
-
-# Configure LibC Name Service
-COPY docker/nsswitch.conf /etc/nsswitch.conf
+  git
 
 WORKDIR /app/gogs
-COPY docker ./docker
-COPY --from=binarybuilder /gogs.io/gogs/gogs .
 
-RUN ./docker/build/finalize.sh
+COPY go.mod go.sum .
 
-# Configure Docker Container
-VOLUME ["/data", "/backup"]
-EXPOSE 22 3000
-HEALTHCHECK CMD (curl -o /dev/null -sS http://localhost:3000/healthcheck) || exit 1
-ENTRYPOINT ["/app/gogs/docker/start.sh"]
-CMD ["/usr/bin/s6-svscan", "/app/gogs/docker/s6/"]
+RUN go mod download
+
+COPY . .
+
+RUN go build -buildvcs=false -o gogs
+
+# --- SRAGE 2: PROD ---
+
+FROM alpine:3.21
+
+RUN apk --no-cache add git linux-pam-dev
+
+WORKDIR /app
+
+RUN addgroup -S gogs && adduser -S gogs -G gogs
+
+RUN mkdir -p /app/custom/conf && chown -R gogs:gogs /app/custom
+
+COPY custom/conf/app.ini /app/custom/conf/app.ini
+
+RUN chmod -R 777 /app/custom/conf
+
+COPY --from=builder /app/gogs/gogs /app/
+
+RUN chown -R gogs:gogs /app
+
+EXPOSE 3000 22
+
+USER gogs
+
+CMD ["/app/gogs", "web"]
