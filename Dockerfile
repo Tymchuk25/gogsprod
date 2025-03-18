@@ -29,6 +29,8 @@ RUN addgroup -S gogs && adduser -S gogs -G gogs
 
 RUN mkdir -p /app/custom/conf && chown -R gogs:gogs /app/custom
 
+RUN mkdir -p /app/data && chown -R gogs:gogs /app/data
+
 COPY custom/conf/app.ini /app/custom/conf/app.ini
 
 RUN chmod -R 777 /app/custom/conf

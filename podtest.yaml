@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: podtest
+spec:
+  containers:
+    - name : test
+      image: vitaliitymchuk/gogs:0.1
+      ports:
+        - containerPort: 3000
