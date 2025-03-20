@@ -40,11 +40,7 @@ spec:
         volumeMounts:
         - name: mysql-storage
           mountPath: /var/lib/mysql
-  volumeClaimTemplates:
-  - metadata:
-      name: mysql-storage
-    spec:
-      accessModes: [ "ReadWriteOnce" ]
-      resources:
-        requests:
-          storage: 200Mi
+      volumes:
+       - name: mysql-storage
+         persistentVolumeClaim:
+           claimName: mysql-pvc      

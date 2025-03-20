@@ -2,14 +2,15 @@ apiVersion: v1
 kind: PersistentVolume
 metadata:
   name: mysql-pv
+  labels: 
+    app: mysql
 spec:
   capacity:
-    storage: 0.2Gi
+    storage: 100Mi
   volumeMode: Filesystem
   accessModes:
     - ReadWriteOnce
   persistentVolumeReclaimPolicy: Retain
-  storageClassName: manual
   hostPath:
     path: "/mnt/data/mysql"
 
