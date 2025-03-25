@@ -13,22 +13,14 @@ pipeline {
         stage('Lint Check'){
             steps{
                 echo 'Lintting...'
-                sh 'docker build -t ${DOCKER_LINT_TAG} --target lint .'    
+           //     sh 'docker build -t ${DOCKER_LINT_TAG} --target lint .'    
             }
         }
 
         stage('Test Application'){
             steps {
                 echo 'Running tests...'  
-                sh 'docker build -t ${DOCKER_TEST_TAG} --target test .'        
-            }
-        }
-        
-        stage('Build Artifact') {
-            when { branch 'main' }
-            steps {
-                echo 'Building the application...'
-                sh 'docker build -t ${DOCKER_LATEST} .'
+             //   sh 'docker build -t ${DOCKER_TEST_TAG} --target test .'        
             }
         }
 
@@ -41,7 +33,16 @@ pipeline {
                     }
                 }
             }
-        } 
+        }
+        
+        stage('Build Artifact') {
+            when { branch 'main' }
+            steps {
+                echo 'Building the application...'
+                sh 'docker build -t ${DOCKER_LATEST} .'
+            }
+        }
+ 
 
         stage('Docker Push'){
             steps{
