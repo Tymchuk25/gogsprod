@@ -5,7 +5,6 @@ scripts/**
 .github/
 .github/**
 .dockerignore
-*.yml
 *.md
 .editorconfig
 .gitignore

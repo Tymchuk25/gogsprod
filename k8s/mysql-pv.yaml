@@ -5,6 +5,7 @@ metadata:
   labels: 
     app: mysql
 spec:
+  storageClassName: manual
   capacity:
     storage: 100Mi
   volumeMode: Filesystem
