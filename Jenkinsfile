@@ -13,20 +13,20 @@ pipeline {
         stage('Lint Check'){
             steps{
                 echo 'Lintting...'
-           //     sh 'docker build -t ${DOCKER_LINT_TAG} --target lint .'    
+                sh 'docker build -t ${DOCKER_LINT_TAG} --target lint .'    
             }
         }
 
         stage('Test Application'){
             steps {
                 echo 'Running tests...'  
-             //   sh 'docker build -t ${DOCKER_TEST_TAG} --target test .'        
+                sh 'docker build -t ${DOCKER_TEST_TAG} --target test .'        
             }
         }
 
         stage('Docker login') {
             steps {
-                echo 'Logging in to Docker Hub'
+                echo 'Logging in to Docker registry'
                 script {
                     withCredentials([usernamePassword(credentialsId: 'ghcr-token', usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                         sh 'echo $PASSWORD | docker login ghcr.io -u $USERNAME --password-stdin'
