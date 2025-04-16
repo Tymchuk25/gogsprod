@@ -1,13 +1,15 @@
+#!/bin/sh
+cat > /app/custom/conf/app.ini <<EOF
 BRAND_NAME = Gogs
 RUN_USER   = gogs
 RUN_MODE   = prod
 
 [database]
 TYPE     = mysql
-HOST     = mysql-service:3306
-NAME     = gogs
-USER     = gogs
-PASSWORD = gogs
+HOST     = ${DB_HOST}
+NAME     = ${DB_NAME}
+USER     = ${DB_USER}
+PASSWORD = ${DB_PASSWORD}
 SSL_MODE = disable
 PATH     = /home/gogs/gogs/data/gogs.db
 SCHEMA   = public
@@ -17,11 +19,11 @@ ROOT           = /home/gogs/gogs-repositories
 DEFAULT_BRANCH = master
 
 [server]
-DOMAIN           = gogs-service
+DOMAIN           = ${GOGS_DOMAIN}
 PROTOCOL         = http
 HTTP_ADDR        = 0.0.0.0
-HTTP_PORT        = 3000
-EXTERNAL_URL     = http://gogs.local:31805/
+HTTP_PORT        = ${HTTP_PORT}
+EXTERNAL_URL     = ${GOGS_EXTERNAL_URL}
 DISABLE_SSH      = false
 SSH_PORT         = 22
 START_SSH_SERVER = false
@@ -55,7 +57,7 @@ ENABLED = false
 [auth]
 REQUIRE_EMAIL_CONFIRMATION  = false
 DISABLE_REGISTRATION        = false
-ENABLE_REGISTRATION_CAPTCHA = false
+ENABLE_REGISTRATION_CAPTCHA = true
 REQUIRE_SIGNIN_VIEW         = false
 
 [user]
@@ -63,5 +65,7 @@ ENABLE_EMAIL_NOTIFICATION = false
 
 [security]
 INSTALL_LOCK = true
-SECRET_KEY   = ulI9H5fXt3dK1aV
+SECRET_KEY   = qmKG6pnP6QJXZFr
+EOF
 
+exec /app/gogs web

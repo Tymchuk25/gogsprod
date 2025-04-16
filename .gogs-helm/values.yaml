@@ -1,0 +1,30 @@
+replicaCount: 1
+
+container:
+  name: gogs
+  pullPolicy: IfNotPresent
+  image:
+    repository: vitaliitymchuk/gogs
+    tag: "0.1"
+    appPort: 3000
+    sshPort: 22
+
+persistence:
+  claimName: gogs-pvc
+  size: 100Mi
+
+service:
+  port:
+    app: 3000
+    ssh : 22
+
+mysql:
+ image:
+   name: mysql
+   tag: "8.0"
+ secretName: mysql-secret
+ databaseName: gogs
+ port: 3306
+ claimName: mysql-pvc
+ size: 100Mi
+

@@ -1,0 +1,18 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Release.Name }}-gogs-service
+spec:
+  selector:
+    app: gogs
+  ports:
+  - name      : http
+    protocol  : TCP
+    port      : {{ .Values.service.port.app }}
+    targetPort: {{ .Values.service.port.app }}
+  
+  - name      : ssh
+    protocol  : TCP
+    port      : 2222
+    targetPort: {{ .Values.service.port.ssh }}
+

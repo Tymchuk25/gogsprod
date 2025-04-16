@@ -38,14 +38,14 @@ RUN go build -buildvcs=false -o gogs
 
 # --- STAGE 5: RUN ---
 
-FROM base AS runner
+FROM alpine:3.21 AS runner
 RUN apk --no-cache add git linux-pam-dev
 WORKDIR /app
 
 RUN addgroup -S gogs && adduser -S gogs -G gogs
 RUN mkdir -p /app/custom/conf && chown -R gogs:gogs /app/custom
-RUN mkdir -p /app/data && chown -R gogs:gogs /app/data
-COPY custom/conf/app.ini /app/custom/conf/app.ini
+COPY entrypoint.sh /app
+RUN chmod +x /app/entrypoint.sh
 RUN chmod -R 777 /app/custom/conf
 COPY --from=builder /app/gogs /app/
 RUN chown -R gogs:gogs /app
@@ -53,5 +53,6 @@ USER gogs
 
 EXPOSE 3000 22
 
-CMD ["/app/gogs", "web"]
+CMD ["/app/entrypoint.sh"]
+
 

@@ -16,15 +16,15 @@ spec:
     spec:
       containers:
       - name: gogs
-        image: vitaliitymchuk/gogs:0.1
+        image: vitaliitymchuk/gogs:0.2
         ports:
         - containerPort: 3000
         - containerPort: 22
-        volumeMounts:
-        - name: gogs-data
-          mountPath: /app/data
-      volumes:
-      - name: gogs-data
-        persistentVolumeClaim:
-          claimName: gogs-pvc
+#        volumeMounts:
+#        - name: gogs-data
+#          mountPath: /app/data
+#      volumes:
+#      - name: gogs-data
+#        persistentVolumeClaim:
+#          claimName: gogs-pvc
 
