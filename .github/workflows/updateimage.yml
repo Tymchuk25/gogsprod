@@ -20,5 +20,5 @@ jobs:
           ACCESS_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
           BRANCH: "main"
           VALUES_FILE_PATH: 'charts/helm-gogs/values.yaml'
-          VALUE_NAME: 'image.tag'
+          VALUE_NAME: 'amg'
           TAG: '${{ github.sha }}'
