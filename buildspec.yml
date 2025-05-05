@@ -1,0 +1,14 @@
+version: 0.2
+phases:
+  install:
+    commands:
+      - echo "Installing dependencies..."
+      - apt-get update
+      - apt-get install -y zip
+  build:
+    commands:
+      - echo "Packaging app into app.zip"
+      - zip -r app.zip .   # Упаковуємо всі файли у app.zip
+artifacts:
+  files:
+    - app.zip
