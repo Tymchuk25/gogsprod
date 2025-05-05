@@ -1,0 +1,14 @@
+.packager
+.packager/**
+scripts
+scripts/**
+.github/
+.github/**
+.dockerignore
+*.md
+.editorconfig
+.gitignore
+Dockerfile*
+gogs
+
+!Taskfile.yml

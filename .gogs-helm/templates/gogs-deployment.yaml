@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ .Release.Name }}
+  labels:
+    app: gogs
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: gogs
+  template:
+    metadata:
+      labels:
+        app: gogs
+    spec:
+      containers:
+      - name: {{ .Values.container.name }}
+        image: {{ .Values.container.image.repository }}:{{ .Values.container.image.tag }}
+        imagePullPolicy: {{ .Values.container.pullPolicy }}
+        ports:
+        - containerPort:  {{ .Values.container.image.appPort }}
+        - containerPort: {{ .Values.container.image.sshPort }}
+        volumeMounts:
+        - name: gogs-data
+          mountPath: /app/data
+      volumes:
+      - name: gogs-data
+        persistentVolumeClaim:
+          claimName: {{ .Values.persistence.claimName }}
+

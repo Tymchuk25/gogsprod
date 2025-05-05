@@ -1,0 +1,24 @@
+name: Update Image Tag in GitOps Repository
+
+on:
+  workflow_run:
+    workflows: ["CI for Gogs"]
+    branches: [main]
+    types:
+      - completed
+
+jobs:
+  update-image-tag:
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: GitOps - Update Image Tag
+        uses: adwert-it/gitops-image-update@v1
+        with:
+          REPOSITORY_NAME: 'Tymchuk25/terraform_and_gogs_helm'
+          ACCESS_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
+          BRANCH: "main"
+          VALUES_FILE_PATH: 'charts/helm-gogs/values.yaml'
+          VALUE_NAME: 'amg'
+          TAG: '${{ github.sha }}'
