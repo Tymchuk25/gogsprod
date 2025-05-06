@@ -45,13 +45,13 @@ jobs:
   sonarcloud:
     name: SonarCloud
     runs-on: ubuntu-latest
-
+    needs: [test]
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
 
     - name: SonarCloud Scan
-      uses: SonarSource/sonarqube-scan-action@v4
+      uses: SonarSource/sonarcloud-github-action@v2
       with:
         organization: Tymchuk25
         projectKey: tymchuk25
