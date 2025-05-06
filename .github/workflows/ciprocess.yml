@@ -1,4 +1,4 @@
-name: CI process for Gogs with cloud deploy
+name: CI Test
 on:
   push:
     branches: [ '*' ]
@@ -12,32 +12,50 @@ jobs:
     needs: lint
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2 # Одержуємо код з репозиторію
+    - name: Checkout code
+      uses: actions/checkout@v2 # Одержуємо код з репозиторію
 
-      - name: Set up Go
-        uses: actions/setup-go@v5
-        with:
-          go-version: '1.23'
+    - name: Set up Go
+      uses: actions/setup-go@v5
+      with:
+        go-version: '1.23'
 
-      - name: Run tests
-        run: go test ./... # Запускаємо всі тести
+    - name: Run tests
+      run: go test ./... # Запускаємо всі тести
 
   lint:
     name: Linting source code Gogs
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2 # Одержуємо код з репозиторію
+    - name: Checkout code
+      uses: actions/checkout@v2 # Одержуємо код з репозиторію
 
-      - name: Set up Go
-        uses: actions/setup-go@v5
-        with:
-          go-version: '1.23'
+    - name: Set up Go
+      uses: actions/setup-go@v5
+      with:
+        go-version: '1.23'
 
-      - name: Download lint
-        run: go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+    - name: Download lint
+      run: go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
 
-      - name: Linting
-        run: golangci-lint run --verbose --timeout=5m ./...
+    - name: Linting
+      run: golangci-lint run --verbose --timeout=5m ./...
+
+  sonarcloud:
+    name: SonarCloud
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: SonarCloud Scan
+      uses: SonarSource/sonarqube-scan-action@v4
+      with:
+        organization: Tymchuk25
+        projectKey: tymchuk25
+        projectName: gogsprod
+      env:
+        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        GIT_SONAR_TOKEN: ${{ secrets.GIT_SONAR_TOKEN }}
