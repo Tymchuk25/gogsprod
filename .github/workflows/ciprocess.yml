@@ -1,4 +1,4 @@
-name: CI Test
+name: CI process with deploy to cloud
 on:
   push:
     branches: [ '*' ]
@@ -52,10 +52,6 @@ jobs:
 
     - name: SonarCloud Scan
       uses: SonarSource/sonarcloud-github-action@v2
-      with:
-        organization: Tymchuk25
-        projectKey: tymchuk25
-        projectName: gogsprod
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         GIT_SONAR_TOKEN: ${{ secrets.GIT_SONAR_TOKEN }}
