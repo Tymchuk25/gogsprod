@@ -1,4 +1,4 @@
-name: CI Test
+name: CI process for Gogs with cloud deploy
 on:
   push:
     branches: [ '*' ]
@@ -13,7 +13,7 @@ jobs:
 
     steps:
     - name: Checkout code
-    - uses: actions/checkout@v2 # Одержуємо код з репозиторію
+      uses: actions/checkout@v2 # Одержуємо код з репозиторію
 
     - name: Set up Go
       uses: actions/setup-go@v5
@@ -39,4 +39,4 @@ jobs:
       run: go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
 
     - name: Linting
-    - run: golangci-lint run --verbose --timeout=5m ./...
+      run: golangci-lint run --verbose --timeout=5m ./...
