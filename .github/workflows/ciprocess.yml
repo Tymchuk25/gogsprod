@@ -1,4 +1,5 @@
 name: CI process with deploy to cloud
+
 on:
   push:
     branches: [ '*' ]
@@ -11,19 +12,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Set up Go
-      uses: actions/setup-go@v5
-      with:
-        go-version: '1.23'
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.23'
 
-    - name: Download lint
-      run: go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
+      - name: Download lint
+        run: go install github.com/golangci/golangci-lint/cmd/golangci-lint@latest
 
-    - name: Linting
-      run: golangci-lint run --verbose --timeout=5m ./...
+      - name: Linting
+        run: golangci-lint run --verbose --timeout=5m ./...
 
   test:
     name: Testing source code Gogs
@@ -31,22 +32,22 @@ jobs:
     needs: lint
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Set up Go
-      uses: actions/setup-go@v5
-      with:
-        go-version: '1.23'
+      - name: Set up Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.23'
 
-    - name: Run tests with coverage
-      run: go test -coverprofile=coverage.out ./...
+      - name: Run tests with coverage
+        run: go test -coverprofile=coverage.out ./...
 
-    - name: Upload coverage report
-      uses: actions/upload-artifact@v2
-      with:
-        name: coverage
-        path: coverage.out
+      - name: Upload coverage report
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: coverage.out
 
   sonarcloud:
     name: SonarCloud
@@ -54,16 +55,16 @@ jobs:
     needs: test
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Download coverage report
-      uses: actions/download-artifact@v3
-      with:
-        name: coverage
+      - name: Download coverage report
+        uses: actions/download-artifact@v4
+        with:
+          name: coverage
 
-    - name: SonarCloud Scan
-      uses: SonarSource/sonarcloud-github-action@v2
-      env:
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        GIT_SONAR_TOKEN: ${{ secrets.GIT_SONAR_TOKEN }}
+      - name: SonarCloud Scan
+        uses: SonarSource/sonarcloud-github-action@v2
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          GIT_SONAR_TOKEN: ${{ secrets.GIT_SONAR_TOKEN }}
