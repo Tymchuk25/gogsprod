@@ -45,7 +45,7 @@
     [service]
     REGISTER_EMAIL_CONFIRM = false
     ENABLE_NOTIFY_MAIL     = false
-    DISABLE_REGISTRATION   = false
+    DISABLE_REGISTRATION   = true
     ENABLE_CAPTCHA         = false
     REQUIRE_SIGNIN_VIEW    = false
 
@@ -66,7 +66,7 @@
 
     [auth]
     REQUIRE_EMAIL_CONFIRMATION  = false
-    DISABLE_REGISTRATION        = false
+    DISABLE_REGISTRATION        = true
     ENABLE_REGISTRATION_CAPTCHA = false
     REQUIRE_SIGNIN_VIEW         = false
 
