@@ -7,7 +7,7 @@ pipeline {
         DOCKER_IMAGE = 'ghcr.io/tymchuk25/gogs'
         DOCKER_LINT_TAG = "${DOCKER_IMAGE}:lint"
         DOCKER_TEST_TAG = "${DOCKER_IMAGE}:test"
-        DOCKER_LATEST = "${DOCKER_IMAGE}:latest" //edit test!
+        DOCKER_LATEST = "${DOCKER_IMAGE}:latest" //edit test!1
     }
     stages {
         stage('Lint Check'){
